@@ -2,39 +2,33 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-/* Dark mode follows the system unless data-theme on <html> forces one. Same rule as the tokens below. */
-@custom-variant dark {
-  &:where([data-theme="dark"], [data-theme="dark"] *) {
-    @slot;
-  }
-  @media (prefers-color-scheme: dark) {
-    &:where(:root:not([data-theme="light"]) *) {
-      @slot;
-    }
-  }
-}
+/* The editor is light by default. data-theme="dark" on <html> switches to the dark tokens. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
-/* Interface tokens, carried over from the prototype. Scenes do not use these; they read the preset.
+/* Interface tokens. Scenes do not use these; they read the preset.
    shadcn's tokens are mapped onto them below so shadcn components match the rest of the editor. */
 :root {
-  --bg: #f5f5f3;
+  --bg: #f9f9f9;
   --panel: #ffffff;
-  --ink: #111111;
-  --ink-muted: #6a6a66;
-  --line: #dcdcd7;
-  --soft: #ecece8;
-  --bad: #b3261e;
+  --ink: #262626;
+  --ink-muted: #737373;
+  --line: #ebebeb;
+  --soft: rgb(0 0 0 / 0.04);
+  --heat: #fa5d19;
+  --heat-ink: #ffffff;
+  --bad: #d92d20;
   --ok: #1a7a3e;
+  --shadow-card: 0 0 0 1px rgb(0 0 0 / 0.04), 0 6px 24px -6px rgb(0 0 0 / 0.08), 0 1px 2px rgb(0 0 0 / 0.04);
+  --shadow-heat: inset 0 -6px 12px rgb(250 29 25 / 0.2), 0 2px 4px rgb(250 93 25 / 0.12), 0 1px 1px rgb(250 93 25 / 0.12), 0 0.5px 0.5px rgb(250 93 25 / 0.16);
+  --shadow-inset: inset 0 6px 12px rgb(0 0 0 / 0.02), inset 0 0.75px 0.75px rgb(0 0 0 / 0.02), inset 0 0.25px 0.25px rgb(0 0 0 / 0.04);
+  --shadow-pill: 0 0 0 0.5px rgb(0 0 0 / 0.06), 0 1px 2px rgb(0 0 0 / 0.06), 0 2px 6px rgb(0 0 0 / 0.04);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #0e0e0d; --panel: #171716; --ink: #f2f2ee; --ink-muted: #9c9c96; --line: #2c2c2a; --soft: #222220; --bad: #ff8a80; --ok: #6fd48f;
-    color-scheme: dark;
-  }
-}
 :root[data-theme="dark"] {
-  --bg: #0e0e0d; --panel: #171716; --ink: #f2f2ee; --ink-muted: #9c9c96; --line: #2c2c2a; --soft: #222220; --bad: #ff8a80; --ok: #6fd48f;
+  --bg: #0e0e0e; --panel: #171717; --ink: #f2f2f2; --ink-muted: #9a9a9a; --line: #2a2a2a; --soft: rgb(255 255 255 / 0.06);
+  --bad: #ff8a80; --ok: #6fd48f;
+  --shadow-card: 0 0 0 1px rgb(255 255 255 / 0.06), 0 6px 24px -6px rgb(0 0 0 / 0.5);
+  --shadow-pill: 0 0 0 0.5px rgb(255 255 255 / 0.1), 0 1px 2px rgb(0 0 0 / 0.4);
   color-scheme: dark;
 }
 
@@ -45,8 +39,8 @@
   --card-foreground: var(--ink);
   --popover: var(--panel);
   --popover-foreground: var(--ink);
-  --primary: var(--ink);
-  --primary-foreground: var(--bg);
+  --primary: var(--heat);
+  --primary-foreground: var(--heat-ink);
   --secondary: var(--soft);
   --secondary-foreground: var(--ink);
   --muted: var(--soft);
@@ -56,13 +50,13 @@
   --destructive: var(--bad);
   --border: var(--line);
   --input: var(--line);
-  --ring: var(--ink);
+  --ring: var(--heat);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --radius: 0.5rem;
+  --radius: 0.625rem;
   --sidebar: var(--panel);
   --sidebar-foreground: var(--ink);
   --sidebar-primary: var(--ink);
@@ -81,6 +75,13 @@
   --color-soft: var(--soft);
   --color-bad: var(--bad);
   --color-ok: var(--ok);
+  --color-heat: var(--heat);
+  --color-ink-muted: var(--ink-muted);
+  --shadow-card: var(--shadow-card);
+  --shadow-heat: var(--shadow-heat);
+  --shadow-inset: var(--shadow-inset);
+  --shadow-pill: var(--shadow-pill);
+  --font-mono: var(--font-geist-mono), ui-monospace, Menlo, monospace;
 
   --font-sans: var(--font-hanken), system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-heading: var(--font-hanken), system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -139,4 +140,25 @@
   }
 }
 
-:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+:focus-visible { outline: 2px solid var(--heat); outline-offset: 2px; }
+
+/* Page frame: hairline rails on both sides of the content, like a drafting sheet. */
+.rails { position: relative; }
+.rails::before, .rails::after { content: ""; position: absolute; top: 0; bottom: 0; width: 1px; background: var(--line); pointer-events: none; }
+.rails::before { left: 0; }
+.rails::after { right: 0; }
+
+/* Small plus marks where hairlines cross. */
+.cross { position: absolute; width: 11px; height: 11px; pointer-events: none; }
+.cross::before, .cross::after { content: ""; position: absolute; background: var(--ink-muted); opacity: 0.45; }
+.cross::before { left: 5px; top: 0; width: 1px; height: 11px; }
+.cross::after { top: 5px; left: 0; height: 1px; width: 11px; }
+
+/* Faint drafting grid behind the header. */
+.grid-paper {
+  background-image:
+    linear-gradient(to right, var(--line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+  background-size: 92px 92px;
+  background-position: -1px -1px;
+}

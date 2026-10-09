@@ -19,23 +19,23 @@ export function TimelinePanel() {
   const scale = total || 1
 
   return (
-    <Section title="3 Video" hint="Order and time the scenes. The video can be as long as you need.">
+    <Section step="03" title="Video" hint="Order and time the scenes. The video can be as long as you need.">
       <Panel>
-        <div className="relative flex h-[22px] overflow-hidden rounded-md border bg-muted">
+        <div className="relative flex h-[22px] overflow-hidden rounded-[8px] bg-soft shadow-inset">
           {slots.map((s, i) => (
-            <i key={s.scene.id} title={`${s.scene.name} ${s.duration} s`} className={cn('block h-full border-r border-background bg-foreground', i % 2 ? 'opacity-55' : 'opacity-85')}
+            <i key={s.scene.id} title={`${s.scene.name} ${s.duration} s`} className={cn('block h-full border-r-2 border-card bg-heat', i % 2 ? 'opacity-60' : 'opacity-100')}
               style={{ width: `${(s.duration / scale) * 100}%` }} />
           ))}
         </div>
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <b className="text-[15px]">{formatDuration(total)}</b>
+          <b className="font-mono text-[15px] font-medium">{formatDuration(total)}</b>
           <span className="text-xs text-muted-foreground">{slots.length} scene{slots.length === 1 ? '' : 's'}</span>
         </div>
         <ol className="flex flex-col gap-1.5">
           {!slots.length && <li className="text-xs text-muted-foreground">No scenes yet. Add frames from step 2.</li>}
           {slots.map((s, idx) => (
-            <li key={s.scene.id} className="grid grid-cols-[22px_minmax(0,1fr)_78px_auto] items-center gap-2 rounded-lg border bg-card px-2 py-1.5">
-              <span className="text-xs text-muted-foreground">{idx + 1}</span>
+            <li key={s.scene.id} className="grid grid-cols-[22px_minmax(0,1fr)_78px_auto] items-center gap-2 rounded-[10px] bg-soft px-2 py-1.5">
+              <span className="font-mono text-[11px] text-muted-foreground">{String(idx + 1).padStart(2, '0')}</span>
               <span className="truncate font-semibold">{s.scene.name}</span>
               <Input type="number" aria-label={`${s.scene.name} duration in seconds`} min={MIN_SCENE_SECONDS} max={MAX_SCENE_SECONDS} step={0.5}
                 value={s.duration} onChange={(e) => setDuration(s.scene.id, parseFloat(e.target.value) || s.scene.defaultDuration)} className="h-7 px-1.5" />

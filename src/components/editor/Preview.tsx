@@ -8,7 +8,7 @@ import { SceneClip } from '@/remotion/SceneClip'
 import { isAvailable, needsMessage, sceneById } from '@/scenes/registry'
 import { FPS, sequence, totalSeconds, videoFrames } from '@/timeline/sequence'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import { Panel } from './Section'
+import { Panel, Tag } from './Section'
 import { useEditor } from './store'
 
 export function Preview() {
@@ -34,17 +34,17 @@ export function Preview() {
         <ToggleGroup
           aria-label="Preview"
           variant="outline"
-          spacing={0}
+          spacing={0.5}
           value={[view.mode]}
           onValueChange={(v: string[]) => v[0] && setView({ ...view, mode: v[0] as 'frame' | 'video' })}
         >
-          <ToggleGroupItem value="frame" className="data-pressed:bg-primary data-pressed:text-primary-foreground">Selected frame</ToggleGroupItem>
-          <ToggleGroupItem value="video" className="data-pressed:bg-primary data-pressed:text-primary-foreground">Full video</ToggleGroupItem>
+          <ToggleGroupItem value="frame">Selected frame</ToggleGroupItem>
+          <ToggleGroupItem value="video">Full video</ToggleGroupItem>
         </ToggleGroup>
-        <span className="text-xs text-muted-foreground">{label}</span>
+        <Tag>{label}</Tag>
       </div>
 
-      <div className="overflow-hidden rounded-md border">
+      <div className="overflow-hidden rounded-[12px] bg-soft">
         {view.mode === 'video' ? (
           slots.length ? (
             <Player

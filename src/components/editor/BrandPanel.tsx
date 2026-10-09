@@ -95,7 +95,7 @@ export function BrandPanel() {
   const bgValue = BACKGROUNDS.some((b) => b.value === preset.background) ? preset.background : 'custom'
 
   return (
-    <Section title="1 Brand" hint="Upload the logo as SVG. Convert text to outlines first so letters are drawn as shapes.">
+    <Section step="01" title="Brand" hint="Upload the logo as SVG. Convert text to outlines first so letters are drawn as shapes.">
       <Panel>
         <div className="flex flex-wrap items-center gap-2">
           <Button onClick={() => fileRef.current?.click()}>Upload brand SVG</Button>
