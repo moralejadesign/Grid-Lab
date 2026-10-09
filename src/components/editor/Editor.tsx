@@ -6,6 +6,7 @@ import { TimelinePanel } from './TimelinePanel'
 import { Preview } from './Preview'
 import { ExportPanel } from './ExportPanel'
 import { Tag } from './Section'
+import { ThemeToggle } from './ThemeToggle'
 
 const Cross = ({ className }: { className: string }) => <span aria-hidden className={`cross ${className}`} />
 
@@ -28,9 +29,12 @@ export function Editor() {
             <span className="text-[17px] font-semibold tracking-[-.01em]">Grid Lab</span>
           </div>
           <Tag className="hidden sm:inline">Private beta</Tag>
-          <a href="https://moraleja.co" target="_blank" rel="noreferrer" className="rounded-[10px] bg-soft px-3 py-1.5 text-sm font-medium hover:text-heat">
-            moraleja.co
-          </a>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <a href="https://moraleja.co" target="_blank" rel="noreferrer" className="rounded-[10px] bg-soft px-3 py-1.5 text-sm font-medium hover:text-heat">
+              moraleja.co
+            </a>
+          </div>
           <Cross className="-bottom-[6px] -left-[6px]" />
           <Cross className="-right-[6px] -bottom-[6px]" />
         </div>

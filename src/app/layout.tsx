@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Analytics } from '@vercel/analytics/next'
 import { Geist_Mono, Hanken_Grotesk } from 'next/font/google'
+import { themeScript } from '@/components/editor/ThemeToggle'
 import './globals.css'
 
 const hanken = Hanken_Grotesk({ variable: '--font-hanken', subsets: ['latin'], weight: ['400', '500', '600', '700'] })
@@ -13,7 +14,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
-    <html lang="en" className={`${hanken.variable} ${mono.variable} antialiased`}>
+    <html lang="en" data-theme="dark" className={`${hanken.variable} ${mono.variable} antialiased`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body>
         {children}
         <Analytics />

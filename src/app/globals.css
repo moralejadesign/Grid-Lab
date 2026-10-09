@@ -2,7 +2,7 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-/* The editor is light by default. data-theme="dark" on <html> switches to the dark tokens. */
+/* The editor is dark by default: the layout sets data-theme="dark" on <html>. ThemeToggle switches it to light. */
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 /* Interface tokens. Scenes do not use these; they read the preset.
@@ -25,10 +25,17 @@
 }
 
 :root[data-theme="dark"] {
-  --bg: #0e0e0e; --panel: #171717; --ink: #f2f2f2; --ink-muted: #9a9a9a; --line: #2a2a2a; --soft: rgb(255 255 255 / 0.06);
-  --bad: #ff8a80; --ok: #6fd48f;
-  --shadow-card: 0 0 0 1px rgb(255 255 255 / 0.06), 0 6px 24px -6px rgb(0 0 0 / 0.5);
-  --shadow-pill: 0 0 0 0.5px rgb(255 255 255 / 0.1), 0 1px 2px rgb(0 0 0 / 0.4);
+  --bg: #0b0b0b;
+  --panel: #151515;
+  --ink: #ededed;
+  --ink-muted: #8c8c8c;
+  --line: #242424;
+  --soft: rgb(255 255 255 / 0.06);
+  --bad: #ff8a80;
+  --ok: #6fd48f;
+  --shadow-card: 0 0 0 1px rgb(255 255 255 / 0.07), 0 8px 28px -8px rgb(0 0 0 / 0.6);
+  --shadow-inset: inset 0 1px 0 rgb(255 255 255 / 0.03), inset 0 0 0 0.5px rgb(255 255 255 / 0.05);
+  --shadow-pill: 0 0 0 0.5px rgb(255 255 255 / 0.12), 0 1px 2px rgb(0 0 0 / 0.5);
   color-scheme: dark;
 }
 
