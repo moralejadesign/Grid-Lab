@@ -2,7 +2,7 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-/* The editor is dark by default: the layout sets data-theme="dark" on <html>. ThemeToggle switches it to light. */
+/* The editor follows the viewer's system theme; the toggle overrides it (see ThemeToggle). Tokens key off data-theme on <html>. */
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 /* Interface tokens. Scenes do not use these; they read the preset.
@@ -130,6 +130,14 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* Header grid ripple (BackgroundRippleEffect): each cell pulses after a delay set by its distance from the click. */
+  --animate-cell-ripple: cell-ripple var(--duration, 200ms) ease-out none 1 var(--delay, 0ms);
+  @keyframes cell-ripple {
+    0% { opacity: 0.4; }
+    50% { opacity: 0.9; background-color: color-mix(in srgb, var(--heat) 22%, var(--bg)); }
+    100% { opacity: 0.4; }
+  }
 }
 
 @layer base {
@@ -161,11 +169,3 @@
 .cross::before { left: 5px; top: 0; width: 1px; height: 11px; }
 .cross::after { top: 5px; left: 0; height: 1px; width: 11px; }
 
-/* Faint drafting grid behind the header. */
-.grid-paper {
-  background-image:
-    linear-gradient(to right, var(--line) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--line) 1px, transparent 1px);
-  background-size: 92px 92px;
-  background-position: -1px -1px;
-}

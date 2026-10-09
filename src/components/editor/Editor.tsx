@@ -7,6 +7,7 @@ import { Preview } from './Preview'
 import { ExportPanel } from './ExportPanel'
 import { Tag } from './Section'
 import { ThemeToggle } from './ThemeToggle'
+import { BackgroundRippleEffect } from '@/components/ui/background-ripple-effect'
 
 const Cross = ({ className }: { className: string }) => <span aria-hidden className={`cross ${className}`} />
 
@@ -41,12 +42,18 @@ export function Editor() {
       </header>
 
       <div className="border-b">
-        <div className="rails grid-paper mx-auto max-w-[1480px] px-5 py-12 text-center sm:py-16">
-          <Tag className="absolute top-3 left-4 hidden md:inline">SVG</Tag>
-          <Tag className="absolute top-3 right-4 hidden md:inline">MP4</Tag>
-          <Tag className="absolute bottom-3 left-4 hidden md:inline">PNG</Tag>
-          <Tag className="absolute right-4 bottom-3 hidden md:inline">1920 × 1080</Tag>
-          <div className="relative mx-auto max-w-[720px] bg-bg/80 px-4 py-2">
+        <div className="rails mx-auto max-w-[1480px] px-5 py-12 text-center sm:py-16">
+          {/* Click a cell to send a ripple across the grid. */}
+          <div className="absolute inset-0 overflow-hidden">
+            <BackgroundRippleEffect rows={8} cols={27} cellSize={56} />
+          </div>
+          <div className="pointer-events-none">
+            <Tag className="absolute top-3 left-4 z-10 hidden md:inline">SVG</Tag>
+            <Tag className="absolute top-3 right-4 z-10 hidden md:inline">MP4</Tag>
+            <Tag className="absolute bottom-3 left-4 z-10 hidden md:inline">PNG</Tag>
+            <Tag className="absolute right-4 bottom-3 z-10 hidden md:inline">1920 × 1080</Tag>
+          </div>
+          <div className="pointer-events-none relative z-10 mx-auto max-w-[720px] px-4 py-2">
             <h1 className="text-[40px] leading-[1.05] font-medium tracking-[-.02em] sm:text-[56px]">
               Brand videos, built from
               <br />
