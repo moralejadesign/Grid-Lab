@@ -19,6 +19,14 @@ type EditorState = {
   showChrome: boolean
   timeline: TimelineEntry[]
   view: View
+  /** Graphics showcase: chosen template and its length. */
+  graphicsTemplate: string
+  graphicsSeconds: number
+  /** Brand showcase length. */
+  brandSeconds: number
+  setGraphicsTemplate: (id: string) => void
+  setGraphicsSeconds: (s: number) => void
+  setBrandSeconds: (s: number) => void
   setBrand: (patch: Partial<Brand>) => void
   setName: (name: string) => void
   applyLogo: (parsed: ParsedSvg, fileName: string) => void
@@ -44,6 +52,12 @@ export const useEditor = create<EditorState>((set) => ({
   showChrome: true,
   timeline: defaultTimeline,
   view: { mode: 'frame', id: 'logo' },
+  graphicsTemplate: 'gs-orbit',
+  graphicsSeconds: sceneById('gs-orbit')!.defaultDuration,
+  brandSeconds: sceneById('brand-showcase')!.defaultDuration,
+  setGraphicsTemplate: (id) => set({ graphicsTemplate: id, graphicsSeconds: sceneById(id)?.defaultDuration ?? 8 }),
+  setGraphicsSeconds: (s) => set({ graphicsSeconds: clamp(s, MIN_SCENE_SECONDS, MAX_SCENE_SECONDS) }),
+  setBrandSeconds: (s) => set({ brandSeconds: clamp(s, MIN_SCENE_SECONDS, MAX_SCENE_SECONDS) }),
   setBrand: (patch) => set((s) => ({ brand: { ...s.brand, ...patch } })),
   setName: (name) => set((s) => ({ brand: { ...s.brand, name }, nameFromFile: false })),
   applyLogo: (parsed, fileName) =>

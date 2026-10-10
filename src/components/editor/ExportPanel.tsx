@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react'
 import { isAvailable, needsMessage, sceneById } from '@/scenes/registry'
-import { sequence } from '@/timeline/sequence'
+import { sequence, type TimelineEntry } from '@/timeline/sequence'
 import { ExportError, exportVideo } from '@/render/video'
 import { exportAllPngs, exportScenePng } from '@/render/stills'
 import { download, slug } from '@/render/download'
@@ -18,8 +18,14 @@ const RESOLUTIONS = [
   { value: 720, label: '720p' },
 ]
 
-export function ExportPanel() {
-  const { brand, preset, showChrome, timeline, view } = useEditor()
+type Props = {
+  /** A showcase exports its own one-clip timeline and key frame instead of the brand video's. */
+  clip?: { timeline: TimelineEntry[]; sceneId: string }
+}
+
+export function ExportPanel({ clip }: Props) {
+  const { brand, preset, showChrome, timeline: videoTimeline, view } = useEditor()
+  const timeline = clip?.timeline ?? videoTimeline
   const [height, setHeight] = useState<1080 | 720>(1080)
   const [job, setJob] = useState<Job | null>(null)
   const [progress, setProgress] = useState(0)
@@ -27,11 +33,11 @@ export function ExportPanel() {
   const abort = useRef<AbortController | null>(null)
 
   const slots = sequence(timeline, brand)
-  const scene = sceneById(view.id)!
+  const scene = sceneById(clip?.sceneId ?? view.id)!
   const sceneOk = isAvailable(scene, brand)
-  const name = slug(brand.name)
+  const name = clip ? `${slug(brand.name)}-${clip.sceneId}` : slug(brand.name)
 
-  const videoBlocked = !slots.length ? 'Add at least one scene to export.' : null
+  const videoBlocked = !slots.length ? (clip ? needsMessage(scene) : 'Add at least one scene to export.') : null
 
   async function run(kind: Job, work: (signal: AbortSignal) => Promise<string>) {
     const ctrl = new AbortController()
@@ -95,12 +101,14 @@ export function ExportPanel() {
         <Button variant="outline" disabled={busy || !sceneOk} onClick={onPng} title={sceneOk ? `Key frame of ${scene.name}` : needsMessage(scene)}>
           Export frame PNG
         </Button>
-        <Button variant="outline" disabled={busy} onClick={onZip}>Export all frames</Button>
+        {!clip && <Button variant="outline" disabled={busy} onClick={onZip}>Export all frames</Button>}
         {busy && <Button variant="ghost" onClick={() => abort.current?.abort()}>Cancel</Button>}
       </div>
       {busy && <Progress value={Math.round(progress * 100)} aria-label="Export progress" />}
       <StatusLine
-        status={status ?? { tone: 'muted', text: videoBlocked ?? `Video exports as MP4 at ${height}p. Frame PNG saves the key frame of ${scene.name}. All frames saves a zip of every scene.` }}
+        status={status ?? { tone: 'muted', text: videoBlocked ?? (clip
+          ? `Video exports as MP4 at ${height}p. Frame PNG saves the key frame of ${scene.name}.`
+          : `Video exports as MP4 at ${height}p. Frame PNG saves the key frame of ${scene.name}. All frames saves a zip of every scene.`) }}
       />
     </Panel>
   )

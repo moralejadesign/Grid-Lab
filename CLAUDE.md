@@ -1,6 +1,12 @@
 # Grid Lab
 
-Web tool for designers. Upload a brand SVG (plus optional font, palette, photos and up to 5 graphics such as posts or posters) and Grid Lab generates the frames every brand video shows: logo construction, safe area, layout grid, type anatomy, glyph set, color. The designer orders and times them into a video of any length, then exports the video and stills.
+Web tool for designers that turns brand assets into animations. Upload a brand SVG (plus optional font, palette, photos and up to 5 graphics such as posts or posters) once, then pick a tool from the home page:
+
+- **Brand video** (`/brand-video`): the frames every brand video shows (logo construction, safe area, layout grid, type anatomy, glyph set, color). The designer orders and times them into a video of any length. This tool gets the most options.
+- **Graphics showcase** (`/graphics-showcase`): the brand's graphics in motion, from templates: Carousel, Orbit, Spiral, Stack.
+- **Brand showcase** (`/brand-showcase`): logo, type, colors and graphics on one board that builds, changes and closes on the brand color.
+
+All tools share one brand in the editor store and export MP4 or WebM plus a PNG key frame. More tools will follow.
 
 This is a product for other designers, not an internal tool. Treat uploads as untrusted and keep each account's files private.
 
@@ -41,9 +47,10 @@ node scripts/build-default-font.mts   # rebuild the built-in Hanken Grotesk outl
 
 ```
 src/
-  app/            Next.js routes (editor, projects, account)
+  app/            Next.js routes: home (/), one per tool, later projects and account
   brand/          parsing: svg.ts, font.ts, palette.ts -> Brand
-  scenes/         one file per scene + registry.ts
+  scenes/         one file per brand video scene + registry.ts (registry also lists the showcases)
+  showcases/      graphics showcase templates and the brand showcase, same Scene contract
   presets/        style presets (motion, line weight, type rules)
   timeline/       ordering and durations
   render/         browser export (Mediabunny) and server render (Lambda)
@@ -83,6 +90,8 @@ type Brand = {
 ```
 
 ## Scene contract
+
+Brand video scenes and showcases share this contract. A showcase is one Scene exported on its own as a one-clip timeline.
 
 ```ts
 type Scene = {

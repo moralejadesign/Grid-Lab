@@ -6,11 +6,11 @@ const quarter = (d: string, fill: string): LogoItem => ({
   d, matrix: I, fill, strokeWidth: 0, fillRule: 'nonzero', anchors: anchorsFromD(d),
 })
 
-/** "Quadra", the sample brand from the prototype. Used by the editor, Remotion Studio and visual tests. */
+/** "brandexample", the sample brand. Used by the editor, Remotion Studio and visual tests. */
 export const sampleBrand: Brand = {
-  name: 'Quadra',
+  name: 'brandexample',
   openingLine: 'Four parts. One circle.',
-  website: 'quadra.example',
+  website: 'brandexample.com',
   principles: ['Simple', 'Bold', 'Human', 'Alive'],
   palette: [
     { name: 'Primary', hex: '#ff5a36' },

@@ -18,7 +18,7 @@ import { useEditor } from './store'
 import { Field, Panel, Section, StatusLine, type Status } from './Section'
 
 const FONT_HINT: Status = { tone: 'muted', text: 'Optional. TTF, OTF, WOFF or WOFF2. Without it, type frames use Hanken Grotesk.' }
-const GRAPHICS_HINT: Status = { tone: 'muted', text: `Optional. Up to ${MAX_GRAPHICS} posts, posters or other graphics as PNG, JPEG or WebP. Adds the Graphics frame.` }
+const GRAPHICS_HINT: Status = { tone: 'muted', text: `Up to ${MAX_GRAPHICS} posts, posters or other graphics as PNG, JPEG or WebP.` }
 const SAMPLE_STATUS: Status = { tone: 'muted', text: 'Sample brand loaded. Upload your SVG to replace it.' }
 
 const BACKGROUNDS = [
@@ -31,7 +31,17 @@ const TRANSITIONS = [
   { value: 'cut', label: 'Cut' },
 ]
 
-export function BrandPanel() {
+export type BrandPanelMode = 'video' | 'graphics' | 'brand'
+
+const HINTS: Record<BrandPanelMode, string> = {
+  video: 'Upload the logo as SVG. Convert text to outlines first so letters are drawn as shapes.',
+  graphics: 'Add up to 5 graphics. The logo, font and palette fill the color cards between them.',
+  brand: 'Upload the logo as SVG, plus the font, palette and graphics you want on the board.',
+}
+
+/** Brand inputs. Each tool shows the fields its animation uses. */
+export function BrandPanel({ mode = 'video' }: { mode?: BrandPanelMode }) {
+  const isVideo = mode === 'video'
   const { brand, preset, showChrome, setBrand, setName, setLayout, setPreset, setShowChrome, loadSample, applyLogo, setFont, addGraphics, removeGraphic } = useEditor()
   const fileRef = useRef<HTMLInputElement>(null)
   const fontRef = useRef<HTMLInputElement>(null)
@@ -95,7 +105,7 @@ export function BrandPanel() {
   const bgValue = BACKGROUNDS.some((b) => b.value === preset.background) ? preset.background : 'custom'
 
   return (
-    <Section step="01" title="Brand" hint="Upload the logo as SVG. Convert text to outlines first so letters are drawn as shapes.">
+    <Section step="01" title="Brand" hint={HINTS[mode]}>
       <Panel>
         <div className="flex flex-wrap items-center gap-2">
           <Button onClick={() => fileRef.current?.click()}>Upload brand SVG</Button>
@@ -189,13 +199,15 @@ export function BrandPanel() {
         <Field label="Brand name" htmlFor="fName">
           <Input id="fName" maxLength={40} value={brand.name} onChange={(e) => setName(e.target.value)} />
         </Field>
-        <Field label="Opening line" htmlFor="fLine">
-          <Input id="fLine" maxLength={60} value={brand.openingLine} onChange={(e) => setBrand({ openingLine: e.target.value })} />
-        </Field>
+        {mode !== 'graphics' && (
+          <Field label="Opening line" htmlFor="fLine">
+            <Input id="fLine" maxLength={60} value={brand.openingLine} onChange={(e) => setBrand({ openingLine: e.target.value })} />
+          </Field>
+        )}
         <Field label="Website" htmlFor="fWeb">
           <Input id="fWeb" maxLength={60} placeholder="yourbrand.com" value={brand.website ?? ''} onChange={(e) => setBrand({ website: e.target.value })} />
         </Field>
-        <Field label="Principles, comma separated" htmlFor="fKeys">
+        {mode !== 'graphics' && <Field label={isVideo ? 'Principles, comma separated' : 'Keywords, comma separated'} htmlFor="fKeys">
           <Input
             id="fKeys"
             maxLength={80}
@@ -205,7 +217,7 @@ export function BrandPanel() {
               setBrand({ principles: e.target.value.split(',').map((s) => s.trim()).filter(Boolean).slice(0, 6) })
             }}
           />
-        </Field>
+        </Field>}
 
         <div>
           <div className="mb-1.5 flex items-center justify-between">
@@ -233,14 +245,14 @@ export function BrandPanel() {
           </div>
         </div>
 
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(130px,1fr))] gap-x-4 gap-y-3">
+        {isVideo && <div className="grid grid-cols-[repeat(auto-fit,minmax(130px,1fr))] gap-x-4 gap-y-3">
           <RangeField label="Safe area" display={`${Math.round(brand.layout.clearSpace * 100)}%`} value={brand.layout.clearSpace} min={0.2} max={1} step={0.05}
             onChange={(clearSpace) => setLayout({ clearSpace })} />
           <RangeField label="Columns" display={String(brand.layout.columns)} value={brand.layout.columns} min={2} max={12} step={1}
             onChange={(columns) => setLayout({ columns })} />
           <RangeField label="Margin" display={`${Math.round(brand.layout.margin * 100)}%`} value={Math.round(brand.layout.margin * 100)} min={3} max={12} step={1}
             onChange={(m) => setLayout({ margin: m / 100 })} />
-        </div>
+        </div>}
 
         <div className="flex flex-wrap items-end gap-2">
           <Field label="Background" className="flex-[1_1_140px]">
@@ -260,7 +272,7 @@ export function BrandPanel() {
               <ColorPicker label="Custom background" value={preset.background} onChange={(background) => setPreset({ background })} />
             </div>
           </Field>
-          <Field label="Transition" className="flex-[1_1_140px]">
+          {isVideo && <Field label="Transition" className="flex-[1_1_140px]">
             <Select items={TRANSITIONS} value={preset.transition} onValueChange={(v) => v && setPreset({ transition: v as 'fade' | 'cut' })}>
               <SelectTrigger aria-label="Transition" className="w-full">
                 <SelectValue />
@@ -269,7 +281,7 @@ export function BrandPanel() {
                 {TRANSITIONS.map((t) => <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>)}
               </SelectContent>
             </Select>
-          </Field>
+          </Field>}
         </div>
         <Label className="text-[13px] font-normal">
           <Checkbox checked={showChrome} onCheckedChange={(v) => setShowChrome(v === true)} />

@@ -3,7 +3,7 @@ import { Composition } from 'remotion'
 import './fonts'
 import { sampleBrand } from '@/brand/sample'
 import { drawnPreset } from '@/presets'
-import { scenes } from '@/scenes/registry'
+import { brandShowcase, graphicTemplates, scenes } from '@/scenes/registry'
 import { FPS, defaultTimeline, sequence, totalSeconds, videoFrames } from '@/timeline/sequence'
 import { Video, type VideoProps } from './Video'
 import { SceneClip } from './SceneClip'
@@ -22,7 +22,7 @@ export const Root: React.FC = () => (
       defaultProps={videoDefaults}
       calculateMetadata={({ props }) => ({ durationInFrames: videoFrames(totalSeconds(sequence(props.timeline, props.brand))) })}
     />
-    {scenes.map((s) => (
+    {[...scenes, ...graphicTemplates.slice(1), brandShowcase].map((s) => (
       <Composition
         key={s.id}
         id={`scene-${s.id}`}

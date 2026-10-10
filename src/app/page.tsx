@@ -1,5 +1,5 @@
-import { EditorClient } from '@/components/editor/EditorClient'
+import { LandingClient } from '@/components/editor/EditorClient'
 
 export default function Home() {
-  return <EditorClient />
+  return <LandingClient />
 }
