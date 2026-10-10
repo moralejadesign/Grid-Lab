@@ -8,8 +8,11 @@ const hanken = Hanken_Grotesk({ variable: '--font-hanken', subsets: ['latin'], w
 const mono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'], weight: ['400', '500'] })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : 'http://localhost:3001'),
   title: 'Grid Lab',
-  description: 'Turn a brand SVG into the frames every brand video needs.',
+  description: 'Brand videos, built from your logo. Upload your brand assets and animate them: a brand video, a graphics showcase or a brand board.',
+  openGraph: { type: 'website', siteName: 'Grid Lab', title: 'Grid Lab', description: 'Brand videos, built from your logo.' },
+  twitter: { card: 'summary_large_image', title: 'Grid Lab', description: 'Brand videos, built from your logo.' },
 }
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
